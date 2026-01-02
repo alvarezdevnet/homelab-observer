@@ -1,13 +1,7 @@
-# Aiden's Hardened Gitignore
 __pycache__/
 .idea/
 .vscode/
 *.log
-venv/
-.DS_Store
-
-# NUNCA subas datos de persistencia
+.env
 **/data/
-*.db
-grafana/data/
-prometheus/data/
+grafana/plugins/

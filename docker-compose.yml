@@ -1,41 +1,13 @@
 services:
   prometheus:
-    image: prom/prometheus:v2.45.0
+    image: prom/prometheus:latest
     container_name: prometheus
-    restart: unless-stopped
     volumes:
-      - ./prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prometheus/data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=15d'
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
+    # Aquí es donde ocurre la magia de la portabilidad
+    environment:
+      - TOWER_IP=${TOWER_IP}
+      - LAPTOP_IP=${LAPTOP_IP_WIFI} 
     ports:
       - "9090:9090"
-
-  grafana:
-    image: grafana/grafana-oss:latest
-    container_name: grafana
     restart: unless-stopped
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./grafana/data:/var/lib/grafana
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin # Cambia esto en el primer login
-      - GF_USERS_ALLOW_SIGN_UP=false
-
-  node-exporter:
-    image: prom/node-exporter:latest
-    container_name: node-exporter
-    restart: unless-stopped
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-    ports:
-      - "9100:9100"
